@@ -1,0 +1,144 @@
+# Santa's Workshop solution to Advent of Code 2020, Day 1
+#
+# This uses Elves at their Workbenches to find
+# two numbers from the file input.txt which total 2020 exactly.
+#
+# Elivsh is language used by the Elves in Santa's Workshop
+# to instruct elves what to do at their workbench.
+#
+# syntax:
+#   comments start with # and continue to the end of line.
+#   constants identifiers :[A-Za-z][A-Za-z_-0-9]* are used
+#     to name non-elf things.  examples are:
+#       :Santa the jolly dude
+#       :Sleigh which needs to be loaded with the result
+
+# resources section declares things needed
+# in Santa's Workshop.  This can include:
+#   * file "file.path" => which is an input file
+#   * Storage => which is container for items
+#                and allows quick lookup of the
+#                item by tag.
+#
+resouces:
+  :source = file "input.txt"
+  :warehouse = Storage
+
+# each elf has a name declared between their
+# pointy ears, ^picard^ is the name of the
+# first elf.
+#
+# each elf has a workbench where their work
+# happens
+#
+# each elf will generally accept packages
+# (e.g. wait on input) which are placed on
+# the workbench
+#
+# the elf can perform operationg on the
+# packages on their workbench
+#
+# the elf can give the result of their
+# work to other elves, Queues, Storage,
+# Stacks, or :Santa
+#
+# the elf will throw away work that
+# has errors.  such as not finding
+# something in Storage  (e.g. fail fast,
+# let it fail)
+#
+# each elf is happiest with small tasks
+# which they will repeat automatically
+#
+# each elf is "stateless", they clear
+# their workbench each time they complete
+# their task before repeating their work
+
+^picard^
+  pick :line from :source
+  give to ^rimmer^
+
+  # explanation:
+  #   'pick' will receive a package from a source
+  #   the souce in this case is a file
+  #   since :line is specified, it will only pick
+  #   a single line from the file stream
+  #
+  #   'give' will move the resulting package from the
+  #   workbench to another place.  in this case it
+  #   is giving the package to the elf ^rimmer^
+
+^rimmer^
+  accept
+  trim
+  give to ^nummie^
+
+  # explanation:
+  #   'accept' will receive a package from anyone
+  #   the package is placed on the workbench
+  #
+  #   'trim' without arguments will remove
+  #   whitespace characters from the front and back
+  #   of the package (the package must contain a string
+  #   of characters).
+  #
+  #   the workbench package is replaced with the trim
+  #   result (e.g. the accepted package is consumed
+  #   during this operation).
+
+^nummie^
+  accept
+  convert to :number
+  give to ^subber^
+
+  # explanation:
+  #   'convert to :number' magically creates a package
+  #   which contains the numeric value of a package.
+
+
+^subbie^
+  accept x
+  2020 - x
+  give :package, x to ^findie^
+
+  # explanation:
+  #   'accept x' gives the name x to the package received.
+  #   ':package' refers to the resulting package on the workbench
+  #   'give' in this case has two parameters and thus gives
+  #     two packages to ^findie^.
+
+^findie^
+  accept target, x
+  find target in :warehouse
+  put target into :warehouse tagged target
+  give :package, x to ^multie^
+
+  # explanation:
+  #  'accept' in this case will receive two packages
+  #  'find' will look for a package in the :warehouse
+  #    which has the matching tag (value of target).
+  #    this will fail if the package is not found.
+  #    failure causes the elf to clear the workbench
+  #    and restart (packages on the workbench are
+  #    thrown away)
+  #  'put' is storing the package and specifying the
+  #    tag to store it under.
+
+^multie^
+  accept x1, x2
+  x1 * x2
+  give to :Santa
+
+:Santa
+  accept present
+  load present on :Sleigh
+
+  # explanation:
+  #   :Santa is a special person who
+  #   wants to load his :Sleigh with
+  #   presents.  When the :Sleigh is
+  #   loaded (e.g. all elves are done
+  #   working), Santa will deliver the
+  #   the packages (e.g. report the solution)
+
+
