@@ -35,7 +35,7 @@ resouces:
 # (e.g. wait on input) which are placed on
 # the workbench
 #
-# the elf can perform operationg on the
+# the elf can perform operations on the
 # packages on their workbench
 #
 # the elf can give the result of their
@@ -89,7 +89,7 @@ resouces:
 ^nummie^
   accept
   convert to :number
-  give to ^subber^
+  give to ^subbie^
 
   # explanation:
   #   'convert to :number' magically creates a package
